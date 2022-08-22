@@ -31,14 +31,17 @@ bg1 = pygame.image.load(imagens.joinpath('background03.png'))
 # bg1 = pygame.transform.scale(bg1, tela.to_tuple())
 
 alienship = pygame.image.load(imagens.joinpath('spaceship.png'))
-alienship = pygame.transform.scale(alienship, (100, 100))
+alienship = pygame.transform.scale(alienship, (90, 90))
+pos_alienship = Point(500, 0)
 
 humanship = pygame.image.load(imagens.joinpath('fighterspr1.png'))
 humanship = pygame.transform.scale(humanship, (150, 90))
+pos_humanship = Point(0, 200)
 
 humanwappon = pygame.image.load(imagens.joinpath('smallfighter0006.png'))
 humanwappon = pygame.transform.scale(humanwappon, (30, 50))
 humanwappon = pygame.transform.rotate(humanwappon, -90)
+pos_humanwappon = Point(200, 200)
 
 
 while running:
@@ -50,10 +53,21 @@ while running:
     screen.blit(bg1, (rel_x - bg1.get_rect().width, 0))
     if rel_x < 1200:
         screen.blit(bg1, (rel_x, 0))
+    # Teclas
+    tecla = pygame.key.get_pressed()
+    if tecla[pygame.K_UP] and pos_humanship.y > 1:
+        pos_humanship.y -= 1
+    if tecla[pygame.K_DOWN] and pos_humanship.y < tela.y - 100:
+        pos_humanship.y += 1
+    # if tecla[pygame.K_RIGHT] and pos_humanship.x < tela.x:
+    #     pos_humanship.x += 1
+    # if tecla[pygame.K_LEFT] and pos_humanship.x > 0:
+    #     pos_humanship.x -= 1
+
     # Movimento da tela
     tela.x -= float(os.getenv('TXMOVE'))
 
-    screen.blit(humanship, (0, 200))
-    screen.blit(alienship, (500, 0))
-    screen.blit(humanwappon, (200, 200))
+    screen.blit(humanship, pos_humanship.to_tuple())
+    screen.blit(alienship, pos_alienship.to_tuple())
+    screen.blit(humanwappon, pos_humanwappon.to_tuple())
     pygame.display.update()
