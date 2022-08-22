@@ -1,7 +1,7 @@
 import pytest
-from incolume.py.vsaliens import Point
+from incolume.py.vsaliens import vsaliens
 
 
 def test_vsaliens():
-    o = Point(12, 13)
+    o = vsaliens.Point(12, 13)
     assert o == ''
