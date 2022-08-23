@@ -44,12 +44,17 @@ pos_humanship = Point(0, 200)
 humanwappon = pygame.image.load(imagens.joinpath('smallfighter0006.png'))
 humanwappon = pygame.transform.scale(humanwappon, (30, 50))
 humanwappon = pygame.transform.rotate(humanwappon, -90)
-pos_humanwappon = Point(200, 200)
+pos_humanwappon = Point(30, 237)
 speed_humanwappon = 0
 
 
 def respawn(coord: Point = None):
     return coord or Point(1300, randint(90, tela.y-90))
+
+
+def respawn_missil():
+    x, y = pos_humanship.to_tuple()
+    return x + 30, y + 37, False, 0
 
 
 while running:
@@ -82,9 +87,13 @@ while running:
                 humanship.get_rect().width
             ):
         pos_humanship.x += 1
+        if not triggered:
+            pos_humanwappon.x += 1
 
     if tecla[pygame.K_LEFT] and pos_humanship.x > 0:
         pos_humanship.x -= 1
+        if not triggered:
+            pos_humanwappon.x -= 1
 
     if tecla[pygame.K_SPACE]:
         triggered = True
@@ -93,6 +102,9 @@ while running:
     # Resurgimento aliens
     if pos_alienship.x == 20:
         pos_alienship = respawn()
+
+    if pos_humanwappon.x > screen.get_rect().width:
+        pos_humanwappon.x, pos_humanwappon.y, triggered, speed_humanwappon = respawn_missil()
 
     # Movimento da tela
     tela.x -= float(os.getenv('TXMOVE'))
