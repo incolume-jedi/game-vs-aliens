@@ -27,6 +27,7 @@ screen = pygame.display.set_mode(tela.to_tuple())
 pygame.display.set_caption(getenv('GAME_NAME', 'Game by Guilda JEDI'))
 # clock = pygame.
 running = True
+triggered = False
 imagens = Path(__file__).parents[3].joinpath('imagens')
 
 bg1 = pygame.image.load(imagens.joinpath('background03.png'))
@@ -44,6 +45,7 @@ humanwappon = pygame.image.load(imagens.joinpath('smallfighter0006.png'))
 humanwappon = pygame.transform.scale(humanwappon, (30, 50))
 humanwappon = pygame.transform.rotate(humanwappon, -90)
 pos_humanwappon = Point(200, 200)
+speed_humanwappon = 0
 
 
 def respawn(coord: Point = None):
@@ -59,13 +61,20 @@ while running:
     screen.blit(bg1, (rel_x - bg1.get_rect().width, 0))
     if rel_x < bg1.get_rect().width:
         screen.blit(bg1, (rel_x, 0))
+
     # Teclas
     tecla = pygame.key.get_pressed()
     if tecla[pygame.K_UP] and pos_humanship.y > 1:
         pos_humanship.y -= 1
+        if not triggered:
+            pos_humanwappon.y -= 1
+
     if tecla[pygame.K_DOWN] and \
             pos_humanship.y < tela.y - humanship.get_rect().height:
         pos_humanship.y += 1
+        if not triggered:
+            pos_humanwappon.y += 1
+
     if tecla[pygame.K_RIGHT] and \
             (
                 pos_humanship.x <
@@ -77,6 +86,10 @@ while running:
     if tecla[pygame.K_LEFT] and pos_humanship.x > 0:
         pos_humanship.x -= 1
 
+    if tecla[pygame.K_SPACE]:
+        triggered = True
+        speed_humanwappon = 1
+
     # Resurgimento aliens
     if pos_alienship.x == 20:
         pos_alienship = respawn()
@@ -84,7 +97,11 @@ while running:
     # Movimento da tela
     tela.x -= float(os.getenv('TXMOVE'))
 
+    # Movimento de sprites
+    pos_alienship.x += -1
+    pos_humanwappon.x += speed_humanwappon
+
+    screen.blit(humanwappon, pos_humanwappon.to_tuple())
     screen.blit(humanship, pos_humanship.to_tuple())
     screen.blit(alienship, pos_alienship.to_tuple())
-    screen.blit(humanwappon, pos_humanwappon.to_tuple())
     pygame.display.update()
