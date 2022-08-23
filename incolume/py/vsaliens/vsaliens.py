@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from dotenv import load_dotenv
 from os import getenv
 from pathlib import Path
+from random import randint
+
 
 load_dotenv()
 
@@ -43,6 +45,11 @@ humanwappon = pygame.transform.scale(humanwappon, (30, 50))
 humanwappon = pygame.transform.rotate(humanwappon, -90)
 pos_humanwappon = Point(200, 200)
 
+
+def respawn(coord: Point = None):
+    return coord or Point(1300, randint(90, tela.y-90))
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -66,8 +73,13 @@ while running:
                 humanship.get_rect().width
             ):
         pos_humanship.x += 1
+
     if tecla[pygame.K_LEFT] and pos_humanship.x > 0:
         pos_humanship.x -= 1
+
+    # Resurgimento aliens
+    if pos_alienship.x == 20:
+        pos_alienship = respawn()
 
     # Movimento da tela
     tela.x -= float(os.getenv('TXMOVE'))
