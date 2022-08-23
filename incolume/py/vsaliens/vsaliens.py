@@ -29,7 +29,13 @@ pygame.display.set_caption(getenv('GAME_NAME', 'Game by Guilda JEDI'))
 running = True
 triggered = False
 imagens = Path(__file__).parents[3].joinpath('imagens')
+fonts = Path(__file__).parents[3].joinpath('fonts')
 
+font = pygame.font.SysFont(
+    name=fonts.joinpath('Silkscreen-Regular.ttf').as_posix(),
+    size=50
+)
+pontos = 0
 bg1 = pygame.image.load(imagens.joinpath('background03.png'))
 # bg1 = pygame.transform.scale(bg1, tela.to_tuple())
 
@@ -113,6 +119,10 @@ while running:
     pos_alienship.x += -1
     pos_humanwappon.x += speed_humanwappon
 
+    # Score
+    score = font.render(f'Pontos: {pontos}', True, (0, 0, 0))
+
+    screen.blit(score, (50, tela.y - 100))
     screen.blit(humanwappon, pos_humanwappon.to_tuple())
     screen.blit(humanship, pos_humanship.to_tuple())
     screen.blit(alienship, pos_alienship.to_tuple())
