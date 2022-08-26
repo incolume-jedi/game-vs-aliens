@@ -63,6 +63,27 @@ def respawn_missil():
     return x + 30, y + 37, False, 0
 
 
+rect_humanwappon = humanwappon.get_rect()
+rect_humanship = humanship.get_rect()
+rect_alienship = alienship.get_rect()
+
+
+def colisions():
+    global pontos
+    if rect_humanwappon.colliderect(rect_alienship):
+        pontos += 1
+        return True
+    elif rect_alienship.x <= 30:
+        pontos -= 1
+        return True
+        # alienship.copy()
+    elif rect_humanship.colliderect(rect_alienship):
+        print('game over')
+        exit()
+        return True
+    return False
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -106,10 +127,10 @@ while running:
         speed_humanwappon = 1
 
     # Resurgimento aliens
-    if pos_alienship.x == 20:
+    if pos_alienship.x == 20 or colisions():
         pos_alienship = respawn()
 
-    if pos_humanwappon.x > screen.get_rect().width:
+    if pos_humanwappon.x > screen.get_rect().width or colisions():
         pos_humanwappon.x, pos_humanwappon.y, triggered, speed_humanwappon = respawn_missil()
 
     # Movimento da tela
@@ -118,6 +139,14 @@ while running:
     # Movimento de sprites
     pos_alienship.x += -1
     pos_humanwappon.x += speed_humanwappon
+
+    # Area de contato
+    pygame.draw.rect(screen, (255, 0, 0), rect_humanwappon, 4)
+    pygame.draw.rect(screen, (255, 0, 0), rect_humanship, 4)
+    pygame.draw.rect(screen, (255, 0, 0), rect_alienship, 4)
+    rect_alienship.x, rect_alienship.y = pos_alienship.to_tuple()
+    rect_humanwappon.x, rect_humanwappon.y = pos_humanwappon.to_tuple()
+    rect_humanship.x, rect_humanship.y = pos_humanship.to_tuple()
 
     # Score
     score = font.render(f'Pontos: {pontos}', True, (0, 0, 0))
